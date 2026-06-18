@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Превосходство">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Чат-боты: план восстановления и заработка</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #eef2f5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding: 0 0 calc(50px + env(safe-area-inset-bottom, 0px)) 0;
+            color: #1a2c3e;
+        }
+        .progress-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: white;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 12px 16px;
+        }
+        .progress-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #1e40af;
+        }
+        .progress-bar-bg {
+            background-color: #e2e8f0;
+            border-radius: 20px;
+            height: 10px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            background-color: #3b82f6;
+            width: 0%;
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.2s ease;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 16px 16px 20px 16px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #0b3b5f;
+        }
+        .subhead {
+            font-size: 1rem;
+            color: #2c6e9e;
+            border-left: 4px solid #3b82f6;
+            padding-left: 14px;
+            margin: 12px 0 20px 0;
+        }
+        .bot-note {
+            background-color: #e0f2fe;
+            border-left: 6px solid #0284c7;
+            padding: 14px 16px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        .week-card {
+            background: white;
+            border-radius: 24px;
+            margin-bottom: 24px;
+            padding: 18px 16px 8px 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            border: 1px solid #e9edf2;
+        }
+        .week-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #0f2b3d;
+        }
+        .week-goal {
+            font-size: 0.85rem;
+            color: #3b6e9e;
+            margin-bottom: 18px;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed #cbdde9;
+        }
+        .day-item {
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f4f8;
+        }
+        .day-header {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .day-name {
+            font-weight: 700;
+            font-size: 1.05rem;
+            background: #eef2ff;
+            padding: 2px 12px;
+            border-radius: 20px;
+            color: #1e40af;
+        }
+        .date {
+            font-size: 0.85rem;
+            color: #5c6f87;
+        }
+        .task-list {
+            list-style: none;
+            margin-left: 4px;
+        }
+        .task-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 0.92rem;
+            line-height: 1.4;
+        }
+        .task-list li input[type="checkbox"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 26px;
+            height: 26px;
+            min-width: 26px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            flex-shrink: 0;
+            margin-top: 0;
+            transition: background 0.15s, border-color 0.15s;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .task-list li input[type="checkbox"]:checked {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+        .task-list li input[type="checkbox"]:checked::after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 3px;
+            width: 7px;
+            height: 12px;
+            border: 2.5px solid white;
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg);
+        }
+        .task-text {
+            flex: 1;
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .task-text label {
+            flex: 1;
+        }
+        .completed label {
+            text-decoration: line-through;
+            color: #8ba0b0;
+        }
+        .recovery-badge {
+            background-color: #e6f7ec;
+            padding: 2px 8px;
+            border-radius: 18px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #0e6b2b;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .bot-badge {
+            background-color: #e0f2fe;
+            padding: 2px 8px;
+            border-radius: 18px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #0369a1;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .info-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 30px;
+            background-color: #cbd5e1;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 6px;
+            flex-shrink: 0;
+        }
+        .info-icon:active {
+            background-color: #94a3b8;
+        }
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(2px);
+        }
+        .modal-content {
+            background: white;
+            max-width: 90%;
+            width: 500px;
+            max-height: 80%;
+            overflow-y: auto;
+            border-radius: 28px;
+            padding: 24px 20px;
+            position: relative;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+        }
+        .modal-content h3 {
+            margin-bottom: 12px;
+            font-size: 1.4rem;
+            color: #0f2b3d;
+        }
+        .modal-content h4 {
+            margin: 16px 0 6px 0;
+            color: #1e40af;
+        }
+        .modal-content p, .modal-content li {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+        .modal-content ul, .modal-content ol {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+        .modal-content a {
+            color: #0284c7;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        .close-modal {
+            background: #eef2ff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 40px;
+            margin-top: 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            width: 100%;
+        }
+        .footer-note {
+            background: #fef9e3;
+            padding: 16px;
+            border-radius: 20px;
+            margin: 16px 0 20px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        .reset-btn {
+            background-color: #f3f4f6;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            width: 100%;
+            margin-top: 12px;
+        }
+        .reset-btn:active {
+            background-color: #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+<div class="progress-sticky">
+    <div class="progress-container">
+        <div class="progress-label">
+            <span>📊 Общий прогресс</span>
+            <span id="progressPercent">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <h1>🤖 Чат-боты для дохода</h1>
+    <div class="subhead">Июнь–Июль 2026 · восстановление + изучение + первый заработок</div>
+    <div class="bot-note">
+        🧠 <strong>Ваш фокус:</strong> освоить конструкторы чат-ботов (ManyChat, BotHelp, SaleBot), создать первого бота, найти заказ или настроить партнёрку.<br>
+        📘 <strong>Подсказки:</strong> нажмите на значок ℹ️ рядом с задачей — откроется пошаговая инструкция и полезные ссылки.
+    </div>
+    <!-- Подсказка установки - только в Safari на iPhone -->
+    <div id="installHint" style="display:none;background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:20px;padding:14px 16px;margin-bottom:20px;font-size:0.85rem;color:#1e40af;line-height:1.6;">
+        <strong style="display:block;margin-bottom:4px;">📲 Установить как приложение</strong>
+        Нажмите <strong>Поделиться</strong> (кнопка □↑ снизу Safari) → <strong>«На экран "Домой"»</strong> — и приложение появится как обычное, без браузера.
+    </div>
+
+    <div id="plan-root"></div>
+    <div class="footer-note">
+        ✅ Отмечайте выполненные дела — прогресс сохраняется.<br>
+        Если нет сил — пропустите день. Двигайтесь в своём темпе.
+    </div>
+    <button class="reset-btn" id="resetBtn">♻️ Сбросить все отметки</button>
+</div>
+
+<!-- Модальное окно -->
+<div id="infoModal" class="modal">
+    <div class="modal-content" id="modalContent">
+        <!-- сюда подставляется информация -->
+    </div>
+</div>
+
+<script>
+    // ---- Данные плана с подробными инструкциями для задач типа 'bot' ----
+    const planData = [
+        { weekTitle: "Неделя 1 · Только восстановление", weekGoal: "10–16 июня — сон, еда, активность", days: [
+            { dayName: "Среда", date: "10 июня", tasks: [
+                { text: "Днём спать 15–20 мин вместе с ребёнком", type: "recovery" },
+                { text: "Вместо вечернего бокала — стакан воды + травяной чай", type: "recovery" },
+                { text: "5 мин глубокого дыхания перед сном", type: "recovery" }
+            ]},
+            { dayName: "Четверг", date: "11 июня", tasks: [
+                { text: "Заменить одно сладкое на яблоко/морковь", type: "recovery" },
+                { text: "Прогулка пешком 10 минут", type: "recovery" },
+                { text: "Лечь спать на 20 мин раньше", type: "recovery" }
+            ]},
+            { dayName: "Пятница", date: "12 июня", tasks: [
+                { text: "Попросить близкого погулять с ребёнком 30 мин — вы в тишине", type: "recovery" },
+                { text: "Добавить порцию овощей к обеду/ужину", type: "recovery" }
+            ]},
+            { dayName: "Суббота", date: "13 июня", tasks: [
+                { text: "Полдня ничего не делать", type: "recovery" },
+                { text: "Один приём пищи без сахара", type: "recovery" }
+            ]},
+            { dayName: "Воскресенье", date: "14 июня", tasks: [
+                { text: "Тёплый душ 3 мин с дыханием", type: "recovery" },
+                { text: "Написать: «Я справился с первой неделей»", type: "recovery" }
+            ]},
+            { dayName: "Понедельник", date: "15 июня", tasks: [
+                { text: "Прогулка 15 минут", type: "recovery" },
+                { text: "Вечер без алкоголя — чай с мятой", type: "recovery" }
+            ]},
+            { dayName: "Вторник", date: "16 июня", tasks: [
+                { text: "Дневной сон 20 мин", type: "recovery" },
+                { text: "Ужин: белковая пища без мучного", type: "recovery" }
+            ]}
+        ]},
+        { weekTitle: "Неделя 2 · Закрепляем привычки", weekGoal: "17–23 июня — режим, растяжка, убираем быстрые углеводы", days: [
+            { dayName: "Среда", date: "17 июня", tasks: [
+                { text: "Прогулка 20 минут", type: "recovery" },
+                { text: "Вместо сладкого — горсть орехов или йогурт", type: "recovery" },
+                { text: "5 мин растяжки перед сном", type: "recovery" }
+            ]},
+            { dayName: "Четверг", date: "18 июня", tasks: [
+                { text: "Дневной сон 20 мин", type: "recovery" },
+                { text: "Салат из свежих овощей на обед", type: "recovery" },
+                { text: "Список: 3 вещи, за которые благодарен себе", type: "recovery" }
+            ]},
+            { dayName: "Пятница", date: "19 июня", tasks: [
+                { text: "Помощник на 1 час — вы лежите в тишине", type: "recovery" },
+                { text: "Вечером ванна или тёплый душ", type: "recovery" }
+            ]},
+            { dayName: "Суббота", date: "20 июня", tasks: [
+                { text: "Выходной от правил (можно пиццу/бокал), но 10 мин на улице", type: "recovery" }
+            ]},
+            { dayName: "Воскресенье", date: "21 июня", tasks: [
+                { text: "Здоровый завтрак (овсянка с ягодами, яйцо)", type: "recovery" },
+                { text: "Лечь спать в 22:00", type: "recovery" }
+            ]},
+            { dayName: "Понедельник", date: "22 июня", tasks: [
+                { text: "5 приседаний + 5 отжиманий от стены", type: "recovery" },
+                { text: "Заменить вечерний десерт на чай с корицей", type: "recovery" }
+            ]},
+            { dayName: "Вторник", date: "23 июня", tasks: [
+                { text: "Проверить самочувствие, записать", type: "recovery" },
+                { text: "Запланировать на след. неделю первый шаг к чат-ботам", type: "recovery" }
+            ]}
+        ]},
+        { weekTitle: "Неделя 3 · Погружение в чат-ботов", weekGoal: "24–30 июня — выбрать конструктор, создать бота, выйти на биржи", days: [
+            { dayName: "Среда", date: "24 июня", tasks: [
+                { text: "Прогулка 20 мин + 5 приседаний", type: "recovery" },
+                { text: "Выбрать конструктор: ManyChat, BotHelp или SaleBot", type: "bot", detail: { title: "Как выбрать конструктор чат-ботов", content: "Сравните три популярные платформы:\n• ManyChat — самый массовый, много интеграций, бесплатен до 1000 контактов. Подходит для Telegram, Facebook Messenger, Instagram. Сайт: manychat.com/ru\n• BotHelp — русскоязычный, простой, много шаблонов для бизнеса. Бесплатный тариф до 500 контактов. bothelp.io\n• SaleBot — отличный для Telegram, недорогой, простой конструктор. salebot.ru\n\nДля начала возьмите ManyChat (попробуйте бесплатно). Зарегистрируйтесь и посмотрите демо-тур." } }
+            ]},
+            { dayName: "Четверг", date: "25 июня", tasks: [
+                { text: "Заменить сладкое на фрукт. Лечь спать на 30 мин раньше", type: "recovery" },
+                { text: "Зарегистрироваться в конструкторе, изучить интерфейс", type: "bot", detail: { title: "Регистрация и первый вход", content: "1. Перейдите на сайт выбранного конструктора.\n2. Нажмите «Зарегистрироваться» (обычно через email или аккаунт Facebook).\n3. Пройдите приветственный тур. Обратите внимание на разделы: «Потоки», «Блоки», «Кнопки», «Условия».\n4. Создайте тестового бота: добавьте приветствие, кнопку «Узнать цены» и автоответ. Не бойтесь экспериментировать.\nСовет: на YouTube есть короткие видео «ManyChat за 15 минут» — посмотрите, если интерфейс кажется сложным." } }
+            ]},
+            { dayName: "Пятница", date: "26 июня", tasks: [
+                { text: "15 мин растяжки + дневной сон 20 мин", type: "recovery" },
+                { text: "Посмотреть обучающее видео (как сделать бот-визитку)", type: "bot", detail: { title: "Где брать уроки", content: "Полезные ссылки:\n• ManyChat Academy (бесплатно) — academy.manychat.com\n• YouTube-канал «Чат-бот маркетинг» — поищите «создание бота визитки»\n• Бесплатный курс «Бот за час» на Stepik (stepik.org/course/12345)\n\nЦель видео: понять логику построения диалога (сценарий). Запишите основные шаги: приветствие → кнопки → ответы → условия." } }
+            ]},
+            { dayName: "Суббота", date: "27 июня", tasks: [
+                { text: "Выходной — только 10 мин прогулка", type: "recovery" },
+                { text: "Создать своего первого бота (приветствие, кнопки, автоответ)", type: "bot", detail: { title: "Практическое задание", content: "Сделайте простого бота для вымышленной компании (например, «Доставка пиццы» или «Клининг»).\nДобавьте:\n• Приветственное сообщение с именем пользователя (переменная {{first_name}}).\n• Две кнопки: «Услуги» и «Контакты».\n• Под каждую кнопку — ответное сообщение.\n• Попробуйте добавить простое условие (если нажата кнопка «Цены», покажи текст).\nПроверьте бота в тестовом режиме (конструктор обычно предоставляет тестовый аккаунт)." } }
+            ]},
+            { dayName: "Воскресенье", date: "28 июня", tasks: [
+                { text: "Ужин с белком и овощами", type: "recovery" },
+                { text: "Подключить бота к Telegram или тестовой странице ВК", type: "bot", detail: { title: "Как подключить канал", content: "Для Telegram:\n1. Найдите в конструкторе раздел «Каналы» → Telegram.\n2. Напишите @BotFather в Telegram, создайте нового бота (команда /newbot).\n3. Скопируйте токен и вставьте в конструктор.\n4. Активируйте бота.\nДля ВКонтакте:\n1. Создайте сообщество ВК.\n2. В разделе «Управление» → «Сообщения» → настройки Callback API.\n3. В конструкторе выберите ВК, следуйте инструкции.\n\nПосле подключения напишите своему боту в мессенджере — он должен ответить." } }
+            ]},
+            { dayName: "Понедельник", date: "29 июня", tasks: [
+                { text: "Прогулка 25 мин", type: "recovery" },
+                { text: "Зарегистрироваться на Kwork/fl.ru как специалист по чат-ботам", type: "bot", detail: { title: "Как создать профиль фрилансера", content: "1. Зайдите на kwork.ru или fl.ru, зарегистрируйтесь.\n2. В профиле укажите: «Разработка чат-ботов в ManyChat/BotHelp».\n3. Добавьте портфолио: хотя бы 1-2 скриншота вашего тестового бота. Опишите, какую задачу решает бот.\n4. Установите цены: для начала 500-1000 руб. за простого бота-визитку.\n5. Напишите яркое описание: «Помогу бизнесу автоматизировать ответы на частые вопросы»." } }
+            ]},
+            { dayName: "Вторник", date: "30 июня", tasks: [
+                { text: "Полный отказ от алкоголя на день", type: "recovery" },
+                { text: "Найти 3 заказа на создание простого бота", type: "bot", detail: { title: "Где искать заказы", content: "• На биржах: Kwork, fl.ru, Freelance.ru, Habr Freelance.\n• В Telegram-каналах: @chatbot_jobs, @freelance_tg, @bot_dev_work.\n• В группах ВК по типу «Фриланс для начинающих».\n\nКак искать: введите запрос «создать чат-бота», «бот для Telegram», «ManyChat разработчик». Откликайтесь на задания с низким бюджетом (500-1500 руб.) — так вы наработаете отзывы. В отклике укажите, что вы новичок, но уже сделали тестового бота (приложите ссылку)." } }
+            ]}
+        ]},
+        { weekTitle: "Неделя 4 · Первые деньги на чат-ботах", weekGoal: "1–9 июля — получить заказ, выполнить, заработать", days: [
+            { dayName: "Среда", date: "1 июля", tasks: [
+                { text: "Прогулка 30 мин", type: "recovery" },
+                { text: "Откликнуться на 2 простых задания (бот-визитка за 500–1000 руб.)", type: "bot", detail: { title: "Как составить отклик", content: "Пример отклика:\n«Здравствуйте! Я начинающий разработчик чат-ботов. Сделал тестового бота для доставки. Могу быстро собрать бота-визитку для вашего бизнеса с приветствием, кнопками и контактами. Цена 700 руб. Срок — 1 день. Приложу скриншоты готового бота в ManyChat. Готов обсудить детали».\n\nОтправьте такие отклики на 2-3 задания. Не бойтесь отказов — это нормально." } }
+            ]},
+            { dayName: "Четверг", date: "2 июля", tasks: [
+                { text: "Спать днём 20 мин. Растяжка", type: "recovery" },
+                { text: "Если взяли заказ — сделать и сдать. Если нет — откликнуться ещё", type: "bot", detail: { title: "Выполнение первого заказа", content: "1. Тщательно выясните требования у заказчика: какой мессенджер, какие функции нужны (опрос, рассылка, консультация).\n2. Сделайте простого бота в конструкторе.\n3. Протестируйте самостоятельно.\n4. Передайте заказчику: дайте ссылку на бота или предоставьте доступ к конструктору.\n5. Если заказчик просит правки — сделайте быстро (но не больше 2-х итераций за эту цену).\n\nПосле успешной сдачи попросите отзыв — это очень важно для будущих заказов." } }
+            ]},
+            { dayName: "Пятница", date: "3 июля", tasks: [
+                { text: "Лёгкий ужин без сладкого", type: "recovery" },
+                { text: "Получить отзыв и оплату (пусть 500 руб. — это победа)", type: "bot", detail: { title: "Приём оплаты", content: "Оформите самозанятость (приложение «Мой налог»). Это просто и легально. Для получения денег удобно использовать карту Сбер/Тинькофф или ЮMoney. В профиле на бирже укажите, что работаете как самозанятый. После выполнения заказа отправьте чек через приложение. Не забудьте поблагодарить заказчика и попросить рекомендацию." } }
+            ]},
+            { dayName: "Суббота", date: "4 июля", tasks: [
+                { text: "Полдня полного отдыха", type: "recovery" },
+                { text: "Изучить партнёрские программы для ботов", type: "bot", detail: { title: "Пассивный доход через партнёрство", content: "Многие конструкторы (ManyChat, BotHelp, SendPulse) имеют партнёрские программы: вы приводите клиента, он оплачивает подписку, вы получаете 20-30% комиссии ежемесячно.\n• ManyChat Partner — manychat.com/partners\n• BotHelp Партнёрка — bothelp.io/partners\n\nТакже можно интегрировать партнёрские ссылки в своего бота (например, бот для обзора товаров). Зарегистрируйтесь в программе, получите ссылку и добавьте в бота кнопку «Купить со скидкой»." } }
+            ]},
+            { dayName: "Воскресенье", date: "5 июля", tasks: [
+                { text: "Контрастный душ", type: "recovery" },
+                { text: "Запустить собственного бота с партнёрской ссылкой (тестово)", type: "bot", detail: { title: "Мини-проект для пассивного дохода", content: "Создайте бота на тему, которая вам интересна (например, «Подборка полезных сервисов для родителей»). Внутри бота сделайте раздел «Полезные инструменты» и разместите партнёрские ссылки (например, на Яндекс.Маркет, Ozon, сервис по поиску репетиторов). Привлекайте друзей или публикуйте ссылку на бота в соцсетях. Даже 100 подписчиков могут принести несколько тысяч рублей в месяц, если партнёрка активная." } }
+            ]},
+            { dayName: "Понедельник", date: "6 июля", tasks: [
+                { text: "Прогулка 30 мин + 10 приседаний", type: "recovery" },
+                { text: "Написать в чат-бот-сообществах: «Могу сделать бота недорого»", type: "bot", detail: { title: "Бесплатная реклама", content: "Вступайте в Telegram-чаты: @chatbot_marketing, @bot_dev_russia, «Чат-бот конструкторы» в ВК. Напишите короткое сообщение: «Разрабатываю простых ботов для бизнеса. Первые 3 заказа со скидкой — 700 рублей. Примеры работ пришлю». Добавьте скриншот вашего тестового бота. Не спамьте, а участвуйте в обсуждениях — помогайте новичкам, и клиенты сами найдут вас." } }
+            ]},
+            { dayName: "Вторник", date: "7 июля", tasks: [
+                { text: "Заменить сладкое на сухофрукты", type: "recovery" },
+                { text: "Зафиксировать общий доход от ботов за месяц (даже 1000 руб.)", type: "bot", detail: { title: "Анализ и мотивация", content: "Запишите сумму, которую удалось заработать. Сравните с нулём в начале месяца. Похвалите себя — это прогресс. Подумайте, сколько заказов можно делать в августе, если выделять 5 часов в неделю (обычно 3-4 заказа по 1000-1500 руб. = 12-15 тыс. руб.). Составьте примерный план на следующий месяц." } }
+            ]},
+            { dayName: "Среда", date: "8 июля", tasks: [
+                { text: "Растяжка 10 мин + ранний сон", type: "recovery" },
+                { text: "Составить план на август: 4–5 заказов → 15–20 тыс. руб.", type: "bot", detail: { title: "План масштабирования", content: "Август:\n• Увеличьте отклики до 10 в неделю.\n• Повысьте цену до 1500 руб. за простого бота.\n• Освойте новую функцию (например, рассылки или внешние API).\n• Зарегистрируйтесь на бирже «Пульс цен» (kwork) и получите статус «быстрый ответ».\n• Соберите портфолио из 3-х работ.\nЦель: стабильно зарабатывать 15-20 тыс. в месяц на подработке без вреда для основной работы." } }
+            ]},
+            { dayName: "Четверг", date: "9 июля", tasks: [
+                { text: "Итог месяца: ответить на вопросы (самочувствие, активность, доход от ботов, следующий шаг)", type: "recovery" }
+            ]}
+        ]}
+    ];
+
+    // Построение интерфейса
+    let totalCheckboxes = 0;
+
+    function buildPlan() {
+        const root = document.getElementById('plan-root');
+        root.innerHTML = '';
+        totalCheckboxes = 0;
+        for (let wi = 0; wi < planData.length; wi++) {
+            const week = planData[wi];
+            const weekDiv = document.createElement('div');
+            weekDiv.className = 'week-card';
+            weekDiv.innerHTML = `<div class="week-title">${week.weekTitle}</div><div class="week-goal">🎯 ${week.weekGoal}</div><div id="week-${wi}"></div>`;
+            const daysContainer = weekDiv.querySelector(`#week-${wi}`);
+            for (let di = 0; di < week.days.length; di++) {
+                const day = week.days[di];
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'day-item';
+                let tasksHtml = '<ul class="task-list">';
+                for (let ti = 0; ti < day.tasks.length; ti++) {
+                    const task = day.tasks[ti];
+                    const badgeClass = task.type === 'recovery' ? 'recovery-badge' : 'bot-badge';
+                    const badgeText = task.type === 'recovery' ? 'восстановление' : 'чат-боты';
+                    const taskId = `w${wi}d${di}t${ti}`;
+                    const hasDetail = task.type === 'bot' && task.detail;
+                    tasksHtml += `
+                        <li>
+                            <input type="checkbox" id="${taskId}">
+                            <div class="task-text">
+                                <label for="${taskId}"><span class="${badgeClass}">${badgeText}</span> ${task.text}</label>
+                                ${hasDetail ? `<span class="info-icon" data-taskid="${taskId}">ℹ️</span>` : ''}
+                            </div>
+                        </li>
+                    `;
+                    totalCheckboxes++;
+                }
+                tasksHtml += '</ul>';
+                dayDiv.innerHTML = `<div class="day-header"><span class="day-name">${day.dayName}</span><span class="date">${day.date}</span></div>${tasksHtml}`;
+                daysContainer.appendChild(dayDiv);
+            }
+            root.appendChild(weekDiv);
+        }
+        attachInfoEvents();
+    }
+
+    function attachInfoEvents() {
+        const infoIcons = document.querySelectorAll('.info-icon');
+        infoIcons.forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const taskId = icon.getAttribute('data-taskid');
+                // ищем задачу по taskId
+                for (let wi = 0; wi < planData.length; wi++) {
+                    const week = planData[wi];
+                    for (let di = 0; di < week.days.length; di++) {
+                        const day = week.days[di];
+                        for (let ti = 0; ti < day.tasks.length; ti++) {
+                            const task = day.tasks[ti];
+                            const currId = `w${wi}d${di}t${ti}`;
+                            if (currId === taskId && task.detail) {
+                                showModal(task.detail.title, task.detail.content);
+                                return;
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    function showModal(title, contentText) {
+        const modal = document.getElementById('infoModal');
+        const modalContent = document.getElementById('modalContent');
+        // преобразуем переносы строк в HTML
+        const formattedContent = contentText.replace(/\n/g, '<br>').replace(/•/g, '•');
+        modalContent.innerHTML = `
+            <h3>${title}</h3>
+            <div>${formattedContent}</div>
+            <button class="close-modal">Закрыть</button>
+        `;
+        modal.style.display = 'flex';
+        const closeBtn = modalContent.querySelector('.close-modal');
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        // закрытие по клику вне окна
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        });
+    }
+
+    // Прогресс и сохранение
+    function updateProgress() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const total = checkboxes.length;
+        if (total === 0) return;
+        let checked = 0;
+        checkboxes.forEach(cb => { if (cb.checked) checked++; });
+        const percent = Math.round((checked / total) * 100);
+        document.getElementById('progressPercent').innerText = `${percent}%`;
+        document.getElementById('progressFill').style.width = `${percent}%`;
+    }
+
+    function saveCheckboxes() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const state = {};
+        checkboxes.forEach(cb => { state[cb.id] = cb.checked; });
+        localStorage.setItem('planProgress', JSON.stringify(state));
+    }
+
+    function loadCheckboxes() {
+        const saved = localStorage.getItem('planProgress');
+        if (!saved) return;
+        const state = JSON.parse(saved);
+        for (const [id, checked] of Object.entries(state)) {
+            const cb = document.getElementById(id);
+            if (cb) {
+                cb.checked = checked;
+                const label = cb.nextElementSibling?.querySelector('label');
+                if (label && checked) label.classList.add('completed');
+                else if (label) label.classList.remove('completed');
+            }
+        }
+        updateProgress();
+    }
+
+    function attachEvents() {
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.type === 'checkbox') {
+                const parentDiv = e.target.closest('.task-text');
+                const label = parentDiv ? parentDiv.querySelector('label') : e.target.nextElementSibling;
+                if (label) {
+                    if (e.target.checked) label.classList.add('completed');
+                    else label.classList.remove('completed');
+                }
+                saveCheckboxes();
+                updateProgress();
+            }
+        });
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            if (confirm('Сбросить все отметки?')) {
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                    const parentDiv = cb.closest('.task-text');
+                    const label = parentDiv ? parentDiv.querySelector('label') : cb.nextElementSibling;
+                    if (label) label.classList.remove('completed');
+                });
+                localStorage.removeItem('planProgress');
+                updateProgress();
+            }
+        });
+    }
+
+    function init() {
+        buildPlan();
+        attachEvents();
+        loadCheckboxes();
+        showInstallHint();
+    }
+
+    function showInstallHint() {
+        var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        var isStandalone = window.navigator.standalone === true;
+        var isSafari = /safari/i.test(navigator.userAgent) && !/crios|fxios|opios/i.test(navigator.userAgent);
+        if (isIOS && !isStandalone && isSafari) {
+            document.getElementById('installHint').style.display = 'block';
+        }
+    }
+
+    init();
+</script>
+</body>
+</html>
